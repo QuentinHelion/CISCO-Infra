@@ -1,0 +1,46 @@
+en
+conf t
+no ip domain-lookup
+crypto isakmp enable
+crypto isakmp policy 10
+encryption aes 256
+authentication pre-share
+hash sha
+group 5
+ex
+crypto isakmp key ESGI address 10.10.20.243
+crypto ipsec transform-set VPN esp-aes 256 esp-sha-hmac
+ip access-list extended VPNACL
+permit ip 172.2.0.0 0.0.255.255 172.168.12.0 0.0.0.255
+ex
+crypto map VPNMAP 10 ipsec-isakmp 
+set peer 10.10.20.243
+set transform-set VPN
+match address VPNACL
+ex
+int s0/3/0
+crypto map VPNMAP
+ex 
+
+
+no ip domain-lookup
+crypto isakmp enable
+crypto isakmp policy 10
+encryption aes 256
+authentication pre-share
+hash sha
+group 5
+ex
+crypto isakmp key ESGI address 10.20.30.130
+crypto ipsec transform-set VPN esp-aes 256 esp-sha-hmac
+ip access-list extended VPNACL
+permit ip 172.168.12.0 0.0.0.255 172.2.0.0 0.0.255.255 
+ex
+crypto map VPNMAP 10 ipsec-isakmp 
+set peer 10.20.30.130
+set transform-set VPN
+match address VPNACL
+ex
+int s0/3/0
+crypto map VPNMAP
+ex 
